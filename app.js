@@ -5,11 +5,22 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 // ---- ROUTES REQUIREMENTS---- //
 const auth = require('./routes/auth');
 
 const app = express();
+
+// ---- DATABASE CONNECTION ---- //
+
+mongoose.Promise = Promise;
+mongoose.connect('mongodb://localhost/final-project-db', {
+  keepAlive: true,
+  reconnectTries: Number.MAX_VALUE
+});
 
 // ---- MIDDLEWARES ---- //
 app.use(logger('dev'));
@@ -22,7 +33,20 @@ app.use(cors({
   origin: ['http://localhost:4200']
 }));
 
-// ---- ROUTE SET UP ---- //
+app.use(session({
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    ttl: 24 * 60 * 60 // 1 day
+  }),
+  secret: 'some-string',
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000
+  }
+}));
+
+// ---- ROUTES SET UP ---- //
 app.use('/auth', auth);
 
 // ---- ERRORS HANDLERS---- //
