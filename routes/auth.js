@@ -14,6 +14,7 @@ router.get('/me', (req, res, next) => {
   }
 });
 
+// ---- SIGNUP POST ---- //
 router.post('/signup', (req, res, next) => {
   if (req.session.currentUser) {
     return res.status(401).json({code: 'unauthorized'});
@@ -21,8 +22,9 @@ router.post('/signup', (req, res, next) => {
 
   const username = req.body.username;
   const password = req.body.password;
+  const email = req.body.email;
 
-  if (!username || !password) {
+  if (!username || !password || !email) {
     return res.status(422).json({code: 'validation'});
   }
 
@@ -37,7 +39,8 @@ router.post('/signup', (req, res, next) => {
 
       const newUser = User({
         username,
-        password: hashPass
+        password: hashPass,
+        email
       });
 
       return newUser.save()
@@ -45,6 +48,34 @@ router.post('/signup', (req, res, next) => {
           req.session.currentUser = newUser;
           res.json(newUser);
         });
+    })
+    .catch(next);
+});
+
+// ---- LOGIN POST ---- //
+router.post('/login', (req, res, next) => {
+  if (req.session.currentUser) {
+    return res.status(401).json({code: 'unauthorized'});
+  }
+
+  const username = req.body.username;
+  const password = req.body.password;
+
+  if (!username || !password) {
+    return res.status(422).json({code: 'validation'});
+  }
+
+  User.findOne({ username })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({code: 'not-found'});
+      }
+      if (bcrypt.compareSync(password, user.password)) {
+        req.session.currentUser = user;
+        return res.json(user);
+      } else {
+        return res.status(404).json({code: 'not-found'});
+      }
     })
     .catch(next);
 });
