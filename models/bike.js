@@ -2,10 +2,12 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
 
 const bikeSchema = new Schema({
-  userId: {
-    type: String
+  owner: {
+    type: ObjectId,
+    ref: 'User'
   },
   brand: {
     type: String,

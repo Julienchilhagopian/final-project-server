@@ -10,7 +10,9 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 
 // ---- ROUTES REQUIREMENTS---- //
+
 const auth = require('./routes/auth');
+const bike = require('./routes/bike');
 
 const app = express();
 
@@ -47,7 +49,9 @@ app.use(session({
 }));
 
 // ---- ROUTES SET UP ---- //
+
 app.use('/auth', auth);
+app.use('/bike', bike);
 
 // ---- ERRORS HANDLERS---- //
 app.use((req, res, next) => {
