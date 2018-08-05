@@ -102,7 +102,7 @@ router.put('/report', (req, res, next) => {
   const bikeId = req.body.id;
 
   const updates = {
-    report: req.body.report
+    report: req.body.reportStatus
   };
 
   Bike.findByIdAndUpdate(bikeId, updates)
