@@ -20,8 +20,8 @@ const bikeSchema = new Schema({
   parkStatus: {
     type: Boolean
   },
-  alert: {
-    type: String
+  report: {
+    type: Boolean
   },
   location: {
     type: String

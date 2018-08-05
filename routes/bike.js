@@ -63,7 +63,7 @@ router.get('/:id', (req, res, next) => {
     });
 });
 
-router.put('/:id', (req, res, next) => {
+router.put('/status', (req, res, next) => {
   const bikeId = req.body.id;
 
   const updates = {
@@ -77,6 +77,41 @@ router.put('/:id', (req, res, next) => {
         return res.status(404).json({code: 'not-found'});
       } else {
         res.json(result);
+      }
+    });
+});
+
+router.get('/', (req, res, next) => {
+  let locationQuery = {};
+
+  if (req.query.location) {
+    locationQuery = {location: {$in: [req.query.location]}};
+  }
+
+  Bike.find(locationQuery)
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({code: 'not-found'});
+      } else {
+        res.json(result);
+      }
+    });
+});
+
+router.put('/report', (req, res, next) => {
+  const bikeId = req.body.id;
+
+  const updates = {
+    report: req.body.report
+  };
+
+  Bike.findByIdAndUpdate(bikeId, updates)
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({code: 'not-found'});
+      } else {
+        res.json(result);
+        console.log('hola que tal');
       }
     });
 });
