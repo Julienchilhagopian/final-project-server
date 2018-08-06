@@ -24,7 +24,15 @@ const bikeSchema = new Schema({
     type: Boolean
   },
   location: {
-    type: String
+    type: {
+      type: String,
+      enum: ['Point'],
+      required: true
+    },
+    coordinates: {
+      type: [Number],
+      required: true
+    }
   }
 });
 

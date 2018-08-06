@@ -65,12 +65,14 @@ router.get('/:id', (req, res, next) => {
 
 router.put('/status', (req, res, next) => {
   const bikeId = req.body.id;
+  const latitude = req.body.latitude;
+  const longitude = req.body.longitude;
 
   const updates = {
-    location: req.body.location,
+    location: [latitude, longitude],
     parkStatus: req.body.parkStatus
   };
-
+  console.log(req.body.parkStatus);
   Bike.findByIdAndUpdate(bikeId, updates)
     .then((result) => {
       if (!result) {
@@ -81,22 +83,25 @@ router.put('/status', (req, res, next) => {
     });
 });
 
-router.get('/', (req, res, next) => {
-  let locationQuery = {};
+// router.get('/', (req, res, next) => {
+//   const latitude = req.query.latitude;
+//   const longitude = req.query.longitude;
 
-  if (req.query.location) {
-    locationQuery = {location: {$in: [req.query.location]}};
-  }
+//   console.log(latitude, longitude);
 
-  Bike.find(locationQuery)
-    .then((result) => {
-      if (!result) {
-        return res.status(404).json({code: 'not-found'});
-      } else {
-        res.json(result);
-      }
-    });
-});
+//   if (req.query.center) {
+//     locationQuery = {location: {$in: [req.query.location]}};
+//   }
+
+//   Bike.find(locationQuery)
+//     .then((result) => {
+//       if (!result) {
+//         return res.status(404).json({code: 'not-found'});
+//       } else {
+//         res.json(result);
+//       }
+//     });
+// });
 
 router.put('/report', (req, res, next) => {
   const bikeId = req.body.id;
