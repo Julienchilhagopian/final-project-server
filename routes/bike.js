@@ -65,11 +65,18 @@ router.get('/:id', (req, res, next) => {
 
 router.put('/status', (req, res, next) => {
   const bikeId = req.body.id;
-  const latitude = req.body.latitude;
-  const longitude = req.body.longitude;
+  let latitude = req.body.latitude;
+  let longitude = req.body.longitude;
+
+  if (!latitude && !longitude) {
+    latitude = 0;
+    longitude = 0;
+  }
+
+  console.log(latitude, longitude);
 
   const updates = {
-    location: [latitude, longitude],
+    location: [Number(latitude), Number(longitude)],
     parkStatus: req.body.parkStatus
   };
   console.log(req.body.parkStatus);
@@ -84,8 +91,8 @@ router.put('/status', (req, res, next) => {
 });
 
 router.get('/', (req, res, next) => {
-  const latitude = req.query.latitude;
-  const longitude = req.query.longitude;
+  let latitude = req.query.latitude;
+  let longitude = req.query.longitude;
 
   console.log(latitude, longitude);
 
