@@ -12,10 +12,15 @@ router.post('/', upload.single('file'), (req, res, next) => {
   const brand = req.body.brand;
   const owner = req.session.currentUser._id;
   const image = req.file;
+  let imageUrl = '';
 
-  console.log(image);
-  // console.log(brand);
-  // console.log(color);
+  // transforming url to a good one
+  let goodUrl = (url) => {
+    var urlArray = url.split('/');
+    urlArray.shift();
+    imageUrl = urlArray.join('/');
+  };
+  goodUrl(image.path);
 
   if (!req.session.currentUser) {
     return res.status(401).json({code: 'unauthorized'});
@@ -30,7 +35,7 @@ router.post('/', upload.single('file'), (req, res, next) => {
     owner,
     color,
     brand,
-    image
+    imageUrl
   });
 
   return newBike.save()

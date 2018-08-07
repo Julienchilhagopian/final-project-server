@@ -33,8 +33,8 @@ const bikeSchema = new Schema({
       default: [10, 10]
     }
   },
-  image: {
-    type: Object
+  imageUrl: {
+    type: String
   }
 });
 
