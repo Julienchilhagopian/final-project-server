@@ -32,6 +32,9 @@ const bikeSchema = new Schema({
       type: [{ type: Number }],
       default: [10, 10]
     }
+  },
+  image: {
+    type: Object
   }
 });
 

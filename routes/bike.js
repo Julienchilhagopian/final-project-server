@@ -5,26 +5,37 @@ const router = express.Router();
 
 const Bike = require('../models/bike');
 
-router.post('/', (req, res, next) => {
+const upload = require('../configs/multer');
+
+router.post('/', upload.single('file'), (req, res, next) => {
   const color = req.body.color;
   const brand = req.body.brand;
   const owner = req.session.currentUser._id;
+  const image = req.file;
+
+  console.log(image);
+  // console.log(brand);
+  // console.log(color);
 
   if (!req.session.currentUser) {
     return res.status(401).json({code: 'unauthorized'});
   }
 
   if (!color || !brand) {
+    console.log('hollaaaa');
     return res.status(422).json({code: 'validation'});
   }
+
   const newBike = Bike({
     owner,
     color,
-    brand
+    brand,
+    image
   });
 
   return newBike.save()
     .then((bike) => {
+      // console.log(bike);
       res.json(bike);
     });
 });
