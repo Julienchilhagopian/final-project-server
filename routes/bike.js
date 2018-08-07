@@ -83,25 +83,30 @@ router.put('/status', (req, res, next) => {
     });
 });
 
-// router.get('/', (req, res, next) => {
-//   const latitude = req.query.latitude;
-//   const longitude = req.query.longitude;
+router.get('/', (req, res, next) => {
+  const latitude = req.query.latitude;
+  const longitude = req.query.longitude;
 
-//   console.log(latitude, longitude);
+  console.log(latitude, longitude);
 
-//   if (req.query.center) {
-//     locationQuery = {location: {$in: [req.query.location]}};
-//   }
-
-//   Bike.find(locationQuery)
-//     .then((result) => {
-//       if (!result) {
-//         return res.status(404).json({code: 'not-found'});
-//       } else {
-//         res.json(result);
-//       }
-//     });
-// });
+  Bike.find({
+    location:
+      { $geoNear:
+         {
+           $geometry: { type: 'Point', coordinates: [ Number(latitude), Number(longitude) ] },
+           $maxDistance: 100
+         }
+      }
+  })
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({code: 'not-found'});
+      } else {
+        res.json(result);
+        console.log(result);
+      }
+    });
+});
 
 router.put('/report', (req, res, next) => {
   const bikeId = req.body.id;
@@ -116,7 +121,6 @@ router.put('/report', (req, res, next) => {
         return res.status(404).json({code: 'not-found'});
       } else {
         res.json(result);
-        console.log('hola que tal');
       }
     });
 });
