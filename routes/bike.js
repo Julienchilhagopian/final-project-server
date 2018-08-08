@@ -4,8 +4,15 @@ const express = require('express');
 const router = express.Router();
 
 const Bike = require('../models/bike');
-
 const upload = require('../configs/multer');
+require('dotenv').config();
+
+// ---- TWILIO API KEYS ---- //
+
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+
+const client = require('twilio')(accountSid, authToken);
 
 router.post('/', upload.single('file'), (req, res, next) => {
   const color = req.body.color;
@@ -133,10 +140,21 @@ router.get('/', (req, res, next) => {
 
 router.put('/report', (req, res, next) => {
   const bikeId = req.body.id;
-
   const updates = {
     report: req.body.reportStatus
   };
+  const emoji = '\u26A0';
+
+  if (req.body.reportStatus) {
+    client.messages
+      .create({
+        body: `BICILANTE COMPANY - ${emoji} WARNING YOUR BIKE IS BEING STOLEN ${emoji}`,
+        from: '+33644607404',
+        to: '+33698833099'
+      })
+      .then(message => console.log(message.sid))
+      .done();
+  }
 
   Bike.findByIdAndUpdate(bikeId, updates)
     .then((result) => {
