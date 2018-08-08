@@ -13,7 +13,7 @@ const bikeSchema = new Schema({
     type: String,
     required: true
   },
-  color: {
+  number: {
     type: String,
     required: true
   },

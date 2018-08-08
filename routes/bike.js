@@ -15,7 +15,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
 router.post('/', upload.single('file'), (req, res, next) => {
-  const color = req.body.color;
+  const number = req.body.number;
   const brand = req.body.brand;
   const owner = req.session.currentUser._id;
   const image = req.file;
@@ -33,14 +33,14 @@ router.post('/', upload.single('file'), (req, res, next) => {
     return res.status(401).json({code: 'unauthorized'});
   }
 
-  if (!color || !brand) {
+  if (!number || !brand) {
     console.log('hollaaaa');
     return res.status(422).json({code: 'validation'});
   }
 
   const newBike = Bike({
     owner,
-    color,
+    number,
     brand,
     imageUrl
   });
@@ -143,14 +143,17 @@ router.put('/report', (req, res, next) => {
   const updates = {
     report: req.body.reportStatus
   };
-  const emoji = '\u26A0';
+  const emojiWarn = '\u26A0';
+  const emojiBike = '\uD83D\uDEB2';
+  const emojiAlarm = '\uD83D\uDEA8';
+  const number = req.body.number;
 
-  if (req.body.reportStatus) {
+  if (req.body.reportStatus && number) {
     client.messages
       .create({
-        body: `BICILANTE COMPANY - ${emoji} WARNING YOUR BIKE IS BEING STOLEN ${emoji}`,
+        body: `BICILANTE COMPANY - ${emojiWarn}${emojiBike}${emojiAlarm} WARNING YOUR BIKE IS BEING STOLEN ${emojiWarn}${emojiBike}${emojiAlarm}`,
         from: '+33644607404',
-        to: '+33698833099'
+        to: number
       })
       .then(message => console.log(message.sid))
       .done();
