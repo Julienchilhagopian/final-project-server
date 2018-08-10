@@ -34,7 +34,6 @@ router.post('/', upload.single('file'), (req, res, next) => {
   }
 
   if (!number || !brand) {
-    console.log('hollaaaa');
     return res.status(422).json({code: 'validation'});
   }
 
@@ -96,13 +95,11 @@ router.put('/status', (req, res, next) => {
     longitude = 0;
   }
 
-  console.log(latitude, longitude);
-
   const updates = {
     location: [Number(latitude), Number(longitude)],
     parkStatus: req.body.parkStatus
   };
-  console.log(req.body.parkStatus);
+
   Bike.findByIdAndUpdate(bikeId, updates)
     .then((result) => {
       if (!result) {
@@ -117,7 +114,8 @@ router.get('/', (req, res, next) => {
   let latitude = req.query.latitude;
   let longitude = req.query.longitude;
 
-  console.log(latitude, longitude);
+  const date = Date.now();
+  console.log('Search:', latitude, longitude);
 
   Bike.find({
     location:
@@ -129,12 +127,9 @@ router.get('/', (req, res, next) => {
       }
   })
     .then((result) => {
-      if (!result) {
-        return res.status(404).json({code: 'not-found'});
-      } else {
-        res.json(result);
-        console.log(result);
-      }
+      const finished = Date.now();
+      res.json(result);
+      console.log('Search:', finished - date, result.length);
     });
 });
 
@@ -155,7 +150,7 @@ router.put('/report', (req, res, next) => {
         from: '+33644607404',
         to: number
       })
-      .then(message => console.log(message.sid))
+      .then(message => console.log('Tzilio messge out:', message.sid))
       .done();
   }
 
