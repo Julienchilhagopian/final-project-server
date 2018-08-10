@@ -34,6 +34,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({
+  allowedHeaders: ['Content-Type'],
   credentials: true,
   origin: [process.env.CLIENT_URL]
 }));
