@@ -38,6 +38,8 @@ const bikeSchema = new Schema({
   }
 });
 
+bikeSchema.index({ location: '2dsphere' });
+
 const Bike = mongoose.model('Bike', bikeSchema);
 
 module.exports = Bike;
